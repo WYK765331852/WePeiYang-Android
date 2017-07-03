@@ -4,9 +4,13 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.kelin.mvvmlight.messenger.Messenger;
+import com.nytimes.android.external.store.base.impl.BarCode;
+import com.nytimes.android.external.store.base.impl.Store;
+import com.nytimes.android.external.store.base.impl.StoreBuilder;
 import com.orhanobut.logger.Logger;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 import com.twt.wepeiyang.commons.cache.CacheProvider;
+import com.twt.wepeiyang.commons.cache.CacheProvider2;
 import com.twt.wepeiyang.commons.network.ApiErrorHandler;
 import com.twt.wepeiyang.commons.network.ApiResponse;
 import com.twt.wepeiyang.commons.network.RetrofitProvider;
@@ -17,6 +21,8 @@ import io.rx_cache.EvictDynamicKey;
 import io.rx_cache.Reply;
 import io.rx_cache.internal.RxCache;
 import io.victoralbertos.jolyglot.GsonSpeaker;
+import okhttp3.ResponseBody;
+import okio.BufferedSource;
 import rx.Notification;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -60,13 +66,32 @@ public class GpaProvider {
         GpaCacheProvider gpaCacheProvider = CacheProvider.getRxCache()
                 .using(GpaCacheProvider.class);
 
-        gpaCacheProvider.getGpaAuto(RetrofitProvider.getRetrofit()
-                .create(GpaApi.class)
-                .getGpa(), new DynamicKey("gpa"), new EvictDynamicKey(update))
+//        gpaCacheProvider.getGpaAuto(RetrofitProvider.getRetrofit()
+//                .create(GpaApi.class)
+//                .getGpa(), new DynamicKey("gpa"), new EvictDynamicKey(update))
+//                .subscribeOn(Schedulers.io())
+//                .doOnNext(gpaBeanReply -> Logger.d(gpaBeanReply.toString()))
+//                .map(Reply::getData)
+//                .map(MyGpaBean::getData)
+//                .compose(mActivity.bindToLifecycle())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(gpaBean -> {
+//                    //提供模块内的刷新服务，因为数据的bus是不能跨module的
+//                    Messenger.getDefault().send(gpaBean, TOKEN_GPA_LOAD_FINISHED);
+//                    if (action != null) {
+//                        if (gpaBean.data.size()!=0){
+//                            action.call(gpaBean);
+//                        }else {
+//                            Toast.makeText(mActivity, "数据出现问题,可尝试关闭退学或在GPA界面手动刷新...", Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                }, new RxErrorHandler(mActivity));
+
+
+        GpaCacheProvider2.getStore()
+                .fetch(new BarCode("gpa","gpa"))
                 .subscribeOn(Schedulers.io())
-                .doOnNext(gpaBeanReply -> Logger.d(gpaBeanReply.toString()))
-                .map(Reply::getData)
-                .map(MyGpaBean::getData)
+                .doOnNext(gpaBean -> Logger.d(gpaBean.toString()))
                 .compose(mActivity.bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(gpaBean -> {
@@ -82,6 +107,7 @@ public class GpaProvider {
                 }, new RxErrorHandler(mActivity));
 
     }
+
 
     public static GpaProvider init(RxAppCompatActivity rxActivity) {
         return new GpaProvider(rxActivity);

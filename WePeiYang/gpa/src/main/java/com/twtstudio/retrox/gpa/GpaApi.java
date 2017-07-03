@@ -2,6 +2,7 @@ package com.twtstudio.retrox.gpa;
 
 
 
+import okhttp3.ResponseBody;
 import retrofit2.http.GET;
 import rx.Observable;
 
@@ -12,4 +13,7 @@ import rx.Observable;
 public interface GpaApi {
     @GET("gpa")
     Observable<MyGpaBean> getGpa();
+
+    @GET("gpa")
+    Observable<ResponseBody> getGpa4Rersister();
 }

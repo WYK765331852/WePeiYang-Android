@@ -81,5 +81,12 @@ dependencies {
     compile 'com.github.piasy:GlideImageLoader:1.2.9'
     compile 'com.github.piasy:ProgressPieIndicator:1.2.9'
 
+    //Store GIT:https://github.com/NYTimes/Store
+    compile 'com.nytimes.android:cache:2.1.0'
+    compile 'com.nytimes.android:store:2.1.0'
+    compile 'com.nytimes.android:middleware:2.1.0'
+    compile 'com.nytimes.android:filesystem:2.1.0'
+
+
     testCompile 'junit:junit:4.12'
 }
